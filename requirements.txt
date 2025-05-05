@@ -3,12 +3,28 @@
 # Add or remove packages as needed for your project.
 # Pinning versions (==x.y.z) is recommended for reproducibility.
 
-# Core Streamlit library
-streamlit==1.30.0
+# Core Dependencies
+streamlit==1.32.0
+python-dotenv==1.0.1
+
+# AI and ML
+google-generativeai==0.3.2
+numpy==1.26.4
+
+# Video Processing
+moviepy==1.0.3
+opencv-python-headless==4.9.0.80
+Pillow==10.2.0
+
+# Audio Processing
+gTTS==2.5.1
+pydub==0.25.1
+
+# Utilities
+requests==2.31.0
 
 # Data Handling and Analysis
 pandas==2.2.2
-numpy==1.24.0
 
 # Visualization (Choose what you need)
 matplotlib==3.8.4
@@ -19,21 +35,12 @@ plotly==5.19.0
 # scikit-learn==1.4.2
 
 # Video and Image Processing (Optional - if your app deals with video/images)
-moviepy==1.0.3
-Pillow==10.0.0
+# moviepy==1.0.3
+# Pillow==10.0.0
 # opencv-python-headless is for environments without a GUI (like Streamlit Cloud)
 # Pin a version that was listed as available and works for you, e.g., 4.11.0.86 or later.
 # Based on your previous error, 4.8.0 wasn't found, but 4.11.0.86 was listed.
-opencv-python-headless==4.8.0
-
-# Utilities (Common helpers)
-requests==2.31.0
-python-dotenv==1.0.0 # If you're using .env files
+# opencv-python-headless==4.8.0
 
 # Add any other libraries your app uses here:
 # your_package_name==x.y.z
-
-# AI and Audio Processing
-google-generativeai==0.3.2
-gTTS==2.3.2
-pydub==0.25.1
