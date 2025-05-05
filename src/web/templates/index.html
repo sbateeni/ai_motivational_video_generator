@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Motivational Video Generator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .video-container {
+            margin-top: 20px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center mb-4">AI Motivational Video Generator</h1>
+        
+        <form id="videoForm" class="mb-4">
+            <div class="mb-3">
+                <label for="theme" class="form-label">Theme (optional)</label>
+                <input type="text" class="form-control" id="theme" placeholder="Enter a theme for your motivational video">
+            </div>
+            
+            <div class="mb-3">
+                <label for="background" class="form-label">Background Image/Video (optional)</label>
+                <input type="file" class="form-control" id="background" accept="image/*,video/*">
+            </div>
+            
+            <div class="mb-3">
+                <label for="music" class="form-label">Background Music (optional)</label>
+                <input type="file" class="form-control" id="music" accept="audio/*">
+            </div>
+            
+            <button type="submit" class="btn btn-primary w-100">Generate Video</button>
+        </form>
+        
+        <div id="loading" class="text-center" style="display: none;">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2">Generating your motivational video...</p>
+        </div>
+        
+        <div id="videoContainer" class="video-container">
+            <h3>Generated Quote:</h3>
+            <p id="quote" class="lead"></p>
+            
+            <h3>Your Video:</h3>
+            <video id="video" controls class="w-100">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('videoForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const form = e.target;
+            const loading = document.getElementById('loading');
+            const videoContainer = document.getElementById('videoContainer');
+            
+            // Show loading
+            form.style.display = 'none';
+            loading.style.display = 'block';
+            videoContainer.style.display = 'none';
+            
+            try {
+                const formData = new FormData();
+                formData.append('theme', document.getElementById('theme').value);
+                
+                const background = document.getElementById('background').files[0];
+                const music = document.getElementById('music').files[0];
+                
+                if (background) formData.append('background', background);
+                if (music) formData.append('music', music);
+                
+                const response = await fetch('/generate', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    document.getElementById('quote').textContent = data.quote;
+                    document.getElementById('video').src = data.video_path;
+                    videoContainer.style.display = 'block';
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch (error) {
+                alert('Error generating video: ' + error.message);
+            } finally {
+                loading.style.display = 'none';
+                form.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html> 

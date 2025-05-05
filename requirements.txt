@@ -1,7 +1,7 @@
-# AI and ML
+# Core Dependencies
+streamlit>=1.30.0
 openai>=1.0.0
-transformers>=4.30.0
-torch>=2.0.0
+python-dotenv>=1.0.0
 
 # Video Processing
 moviepy>=1.0.3
@@ -9,14 +9,9 @@ opencv-python>=4.8.0
 pillow>=10.0.0
 
 # Audio Processing
-pydub>=0.25.1
 gTTS>=2.3.2
-
-# Web Framework
-flask>=2.3.0
-flask-cors>=4.0.0
+pydub>=0.25.1
 
 # Utilities
-python-dotenv>=1.0.0
-requests>=2.31.0
-numpy>=1.24.0 
+numpy>=1.24.0
+requests>=2.31.0 
