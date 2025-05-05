@@ -4,28 +4,31 @@
 # Pinning versions (==x.y.z) is recommended for reproducibility.
 
 # Core Streamlit library
-streamlit==1.33.0 # أو أحدث إصدار مستقر تحتاجه
+streamlit==1.34.0 # Pin a recent stable version you are using
 
 # Data Handling and Analysis
 pandas==2.2.2
 numpy==1.26.4
 
-# Visualization (اختر ما تحتاجه)
+# Visualization (Choose what you need)
 matplotlib==3.8.4
 seaborn==0.13.2
 plotly==5.19.0
 
-# Machine Learning (اختياري - أضف المكتبات التي تستخدمها مثل scikit-learn, tensorflow, pytorch)
-# scikit-learn==1.4.1.post1
+# Machine Learning (Optional - add libraries like scikit-learn, tensorflow, pytorch)
+# scikit-learn==1.4.2
 
-# Image Processing (اختياري - إذا كان تطبيقك يتعامل مع الصور)
+# Video and Image Processing (Optional - if your app deals with video/images)
+moviepy==1.0.3
 Pillow==10.3.0
-# opencv-python-headless # استخدم هذا إذا كنت تحتاج OpenCV بدون واجهة رسومية
-# opencv-python-headless==4.9.0.80 # يمكنك تثبيت إصدار محدد إذا كان هناك مشكلة في الإصدار الأحدث (انظر الخطأ السابق)
+# opencv-python-headless is for environments without a GUI (like Streamlit Cloud)
+# Pin a version that was listed as available and works for you, e.g., 4.11.0.86 or later.
+# Based on your previous error, 4.8.0 wasn't found, but 4.11.0.86 was listed.
+opencv-python-headless==4.11.0.86
 
-# Utilities (أدوات مساعدة شائعة)
+# Utilities (Common helpers)
 requests==2.31.0
-python-dotenv==1.0.0 # إذا كنت تستخدم ملفات .env
+python-dotenv==1.0.0 # If you're using .env files
 
 # Add any other libraries your app uses here:
 # your_package_name==x.y.z
