@@ -1,17 +1,34 @@
-# Core Dependencies
-streamlit==1.30.0
-openai==1.0.0
-python-dotenv==1.0.0
+# This file lists the Python packages required for your Streamlit application.
+# Streamlit Cloud reads this file to install dependencies.
+# Add or remove packages as needed for your project.
+# Pinning versions (==x.y.z) is recommended for reproducibility.
 
-# Video Processing
+# Core Streamlit library
+streamlit==1.34.0 # Pin a recent stable version you are using
+
+# Data Handling and Analysis
+pandas==2.2.2
+numpy==1.26.4
+
+# Visualization (Choose what you need)
+matplotlib==3.8.4
+seaborn==0.13.2
+plotly==5.19.0
+
+# Machine Learning (Optional - add libraries like scikit-learn, tensorflow, pytorch)
+# scikit-learn==1.4.2
+
+# Video and Image Processing (Optional - if your app deals with video/images)
 moviepy==1.0.3
-opencv-python-headless==4.8.0
-pillow==10.0.0
+Pillow==10.3.0
+# opencv-python-headless is for environments without a GUI (like Streamlit Cloud)
+# Pin a version that was listed as available and works for you, e.g., 4.11.0.86 or later.
+# Based on your previous error, 4.8.0 wasn't found, but 4.11.0.86 was listed.
+opencv-python-headless==4.11.0.86
 
-# Audio Processing
-gTTS==2.3.2
-pydub==0.25.1
+# Utilities (Common helpers)
+requests==2.31.0
+python-dotenv==1.0.0 # If you're using .env files
 
-# Utilities
-numpy==1.24.0
-requests==2.31.0 
+# Add any other libraries your app uses here:
+# your_package_name==x.y.z
