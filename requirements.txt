@@ -33,7 +33,7 @@ python-dotenv==1.0.0 # If you're using .env files
 # Add any other libraries your app uses here:
 # your_package_name==x.y.z
 
-# New packages
+# AI and Audio Processing
 google-generativeai==0.3.2
 gTTS==2.3.2
 pydub==0.25.1
