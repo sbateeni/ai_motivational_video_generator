@@ -1,14 +1,13 @@
 """
-Text generation module using OpenAI's GPT model.
+Text generation module using Google's Gemini model.
 """
-import os
-from openai import OpenAI
-from dotenv import load_dotenv
+import google.generativeai as genai
+import streamlit as st
 
 class TextGenerator:
     def __init__(self):
-        load_dotenv()
-        self.client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+        genai.configure(api_key=st.secrets["gemini"]["api_key"])
+        self.model = genai.GenerativeModel('gemini-pro')
         
     def generate_motivational_quote(self, theme=None):
         """
@@ -23,15 +22,8 @@ class TextGenerator:
         prompt = f"Generate a short, powerful motivational quote{f' about {theme}' if theme else ''}. Keep it under 100 words."
         
         try:
-            response = self.client.chat.completions.create(
-                model="gpt-3.5-turbo",
-                messages=[
-                    {"role": "system", "content": "You are a motivational speaker who creates powerful, inspiring quotes."},
-                    {"role": "user", "content": prompt}
-                ],
-                max_tokens=150
-            )
-            return response.choices[0].message.content.strip()
+            response = self.model.generate_content(prompt)
+            return response.text.strip()
         except Exception as e:
             print(f"Error generating quote: {e}")
             return "Believe in yourself and all that you are. Know that there is something inside you that is greater than any obstacle." 
