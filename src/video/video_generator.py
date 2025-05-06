@@ -1,9 +1,20 @@
 """
 Video generation module using MoviePy.
 """
-from moviepy.editor import VideoFileClip, TextClip, CompositeVideoClip, ImageClip, ColorClip
+try:
+    import moviepy.editor as mp
+except ImportError as e:
+    print(f"Error importing moviepy: {e}")
+    print("Please ensure moviepy is installed correctly: pip install moviepy")
+    raise
+
 from PIL import Image
 import numpy as np
+import os
+import sys
+
+print(f"Python path: {sys.path}")
+print(f"Current working directory: {os.getcwd()}")
 
 class VideoGenerator:
     def __init__(self):
@@ -22,7 +33,7 @@ class VideoGenerator:
         Returns:
             TextClip: The created text clip
         """
-        return TextClip(
+        return mp.TextClip(
             text,
             fontsize=70,
             color='white',
@@ -50,19 +61,19 @@ class VideoGenerator:
         if background_path:
             # Load and process background
             if background_path.endswith(('.mp4', '.avi', '.mov')):
-                background = VideoFileClip(background_path)
+                background = mp.VideoFileClip(background_path)
             else:
-                background = ImageClip(background_path)
+                background = mp.ImageClip(background_path)
             
             # Resize background to match dimensions
             background = background.resize((self.width, self.height))
             
             # Create final video
-            final_clip = CompositeVideoClip([background, text_clip])
+            final_clip = mp.CompositeVideoClip([background, text_clip])
         else:
             # Create solid color background
-            color_clip = ColorClip(size=(self.width, self.height), color=(0, 0, 0))
-            final_clip = CompositeVideoClip([color_clip, text_clip])
+            color_clip = mp.ColorClip(size=(self.width, self.height), color=(0, 0, 0))
+            final_clip = mp.CompositeVideoClip([color_clip, text_clip])
         
         # Write the result to a file
         final_clip.write_videofile(output_path, fps=24)
