@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Motivational Video Generator</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
             background-color: #f8f9fa;
@@ -21,72 +21,115 @@
             margin-top: 20px;
             display: none;
         }
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .progress {
+            height: 25px;
+            margin-top: 10px;
+        }
+        .custom-text {
+            min-height: 100px;
+        }
+        .preview-text {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            display: none;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1 class="text-center mb-4">AI Motivational Video Generator</h1>
         
-        <form id="videoForm" class="mb-4">
+        <form id="videoForm" enctype="multipart/form-data">
             <div class="mb-3">
-                <label for="theme" class="form-label">Theme (optional)</label>
-                <input type="text" class="form-control" id="theme" placeholder="Enter a theme for your motivational video">
+                <label for="theme" class="form-label">Theme</label>
+                <input type="text" class="form-control" id="theme" name="theme" value="motivation" placeholder="Enter theme (e.g., motivation, success, leadership)">
             </div>
             
             <div class="mb-3">
-                <label for="background" class="form-label">Background Image/Video (optional)</label>
-                <input type="file" class="form-control" id="background" accept="image/*,video/*">
+                <label for="customText" class="form-label">Custom Text (Optional)</label>
+                <textarea class="form-control custom-text" id="customText" name="customText" placeholder="Enter your own text (each sentence will be a separate scene)"></textarea>
             </div>
             
             <div class="mb-3">
-                <label for="music" class="form-label">Background Music (optional)</label>
-                <input type="file" class="form-control" id="music" accept="audio/*">
+                <label for="background" class="form-label">Background Image/Video (Optional)</label>
+                <input type="file" class="form-control" id="background" name="background" accept="image/*,video/*">
+                <small class="text-muted">Supported formats: JPG, PNG, MP4, AVI, MOV</small>
+            </div>
+            
+            <div class="mb-3">
+                <label for="audio" class="form-label">Background Music (Optional)</label>
+                <input type="file" class="form-control" id="audio" name="audio" accept="audio/*">
+                <small class="text-muted">Supported formats: MP3, WAV</small>
             </div>
             
             <button type="submit" class="btn btn-primary w-100">Generate Video</button>
         </form>
         
-        <div id="loading" class="text-center" style="display: none;">
+        <div class="loading">
             <div class="spinner-border text-primary" role="status">
                 <span class="visually-hidden">Loading...</span>
             </div>
-            <p class="mt-2">Generating your motivational video...</p>
+            <p class="mt-2">Generating your video...</p>
+            <div class="progress">
+                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%"></div>
+            </div>
         </div>
         
-        <div id="videoContainer" class="video-container">
-            <h3>Generated Quote:</h3>
-            <p id="quote" class="lead"></p>
-            
-            <h3>Your Video:</h3>
-            <video id="video" controls class="w-100">
+        <div class="preview-text">
+            <h4>Preview Text:</h4>
+            <p id="previewContent"></p>
+        </div>
+        
+        <div class="video-container">
+            <h3 class="mb-3">Your Generated Video</h3>
+            <video id="generatedVideo" controls class="w-100">
                 Your browser does not support the video tag.
             </video>
+            <div class="mt-3">
+                <a id="downloadLink" href="#" class="btn btn-success w-100" download>Download Video</a>
+            </div>
         </div>
     </div>
 
     <script>
+        // Update preview text when custom text changes
+        document.getElementById('customText').addEventListener('input', function(e) {
+            const preview = document.getElementById('previewContent');
+            const previewDiv = document.querySelector('.preview-text');
+            if (e.target.value.trim()) {
+                preview.textContent = e.target.value;
+                previewDiv.style.display = 'block';
+            } else {
+                previewDiv.style.display = 'none';
+            }
+        });
+
         document.getElementById('videoForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
             const form = e.target;
-            const loading = document.getElementById('loading');
-            const videoContainer = document.getElementById('videoContainer');
+            const formData = new FormData(form);
             
             // Show loading
-            form.style.display = 'none';
-            loading.style.display = 'block';
-            videoContainer.style.display = 'none';
+            document.querySelector('.loading').style.display = 'block';
+            document.querySelector('.video-container').style.display = 'none';
+            
+            // Simulate progress
+            const progressBar = document.querySelector('.progress-bar');
+            let progress = 0;
+            const progressInterval = setInterval(() => {
+                progress = Math.min(progress + 5, 90);
+                progressBar.style.width = `${progress}%`;
+            }, 1000);
             
             try {
-                const formData = new FormData();
-                formData.append('theme', document.getElementById('theme').value);
-                
-                const background = document.getElementById('background').files[0];
-                const music = document.getElementById('music').files[0];
-                
-                if (background) formData.append('background', background);
-                if (music) formData.append('music', music);
-                
                 const response = await fetch('/generate', {
                     method: 'POST',
                     body: formData
@@ -95,17 +138,25 @@
                 const data = await response.json();
                 
                 if (data.success) {
-                    document.getElementById('quote').textContent = data.quote;
-                    document.getElementById('video').src = data.video_path;
-                    videoContainer.style.display = 'block';
+                    // Complete progress
+                    progressBar.style.width = '100%';
+                    
+                    // Show video
+                    const video = document.getElementById('generatedVideo');
+                    const downloadLink = document.getElementById('downloadLink');
+                    const videoPath = `/video/${data.video_path.split('/').pop()}`;
+                    
+                    video.src = videoPath;
+                    downloadLink.href = videoPath;
+                    document.querySelector('.video-container').style.display = 'block';
                 } else {
-                    alert('Error: ' + data.error);
+                    alert('Error: ' + data.message);
                 }
             } catch (error) {
-                alert('Error generating video: ' + error.message);
+                alert('Error: ' + error.message);
             } finally {
-                loading.style.display = 'none';
-                form.style.display = 'block';
+                clearInterval(progressInterval);
+                document.querySelector('.loading').style.display = 'none';
             }
         });
     </script>

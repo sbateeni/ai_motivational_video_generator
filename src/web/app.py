@@ -1,103 +1,92 @@
 """
-Web interface for the AI Motivational Video Generator.
+Flask application for generating motivational videos.
 """
-import streamlit as st
 import os
 import sys
 from pathlib import Path
+from flask import Flask, request, render_template, send_file, jsonify
 
-# Add the project root directory to Python path
-project_root = str(Path(__file__).parent.parent.parent)
-if project_root not in sys.path:
-    sys.path.append(project_root)
+# Get the project root directory and add it to Python path
+project_root = Path(__file__).parent.parent.parent.absolute()
+if str(project_root) not in sys.path:
+    sys.path.append(str(project_root))
 
 from src.ai.text_generator import TextGenerator
 from src.video.video_generator import VideoGenerator
 from src.audio.audio_processor import AudioProcessor
-import tempfile
+
+# Configure Flask app
+app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = os.path.join(project_root, 'uploads')
+app.config['OUTPUT_FOLDER'] = os.path.join(project_root, 'output')
+app.config['TEMP_FOLDER'] = os.path.join(project_root, 'temp')
+
+# Create necessary directories
+for folder in [app.config['UPLOAD_FOLDER'], app.config['OUTPUT_FOLDER'], app.config['TEMP_FOLDER']]:
+    os.makedirs(folder, exist_ok=True)
 
 # Initialize components
 text_generator = TextGenerator()
 video_generator = VideoGenerator()
 audio_processor = AudioProcessor()
 
-# Set page config
-st.set_page_config(
-    page_title="AI Motivational Video Generator",
-    page_icon="🎥",
-    layout="wide"
-)
+@app.route('/')
+def index():
+    return render_template('index.html')
 
-@st.cache
-def generate_video(theme):
+@app.route('/generate', methods=['POST'])
+def generate_video():
     try:
-        # Generate motivational quote
-        quote = text_generator.generate_motivational_quote(theme)
+        # Get form data
+        background = request.files.get('background')
+        audio = request.files.get('audio')
+        theme = request.form.get('theme', 'motivation')
+        custom_text = request.form.get('customText', '').strip()
         
-        # Convert text to speech
-        speech_path = audio_processor.text_to_speech(quote)
-        
-        # Mix with background music (if provided)
-        music_path = st.session_state.music_path
-        if music_path:
-            mixed_audio_path = audio_processor.mix_audio(
-                speech_path,
-                music_path,
-                'temp_audio/mixed.mp3'
-            )
+        # Generate or use custom text
+        if custom_text:
+            text = custom_text
         else:
-            mixed_audio_path = speech_path
+            text = text_generator.generate_motivational_quote(theme)
+        
+        # Save background if provided
+        background_path = None
+        if background:
+            background_path = os.path.join(app.config['UPLOAD_FOLDER'], 'background.jpg')
+            background.save(background_path)
         
         # Generate video
-        background_path = st.session_state.background_path
-        output_path = video_generator.create_video(
-            quote,
-            background_path,
-            'output/video.mp4'
-        )
+        output_path = os.path.join(app.config['OUTPUT_FOLDER'], 'video.mp4')
+        video_path = video_generator.create_video(text, background_path, output_path)
         
-        return {
+        # Add audio if provided
+        if audio:
+            audio_path = os.path.join(app.config['TEMP_FOLDER'], 'audio.mp3')
+            audio.save(audio_path)
+            final_path = os.path.join(app.config['OUTPUT_FOLDER'], 'final_video.mp4')
+            audio_processor.add_audio_to_video(video_path, audio_path, final_path)
+            video_path = final_path
+        
+        return jsonify({
             'success': True,
-            'quote': quote,
-            'video_path': output_path
-        }
-        
+            'message': 'Video generated successfully',
+            'video_path': video_path
+        })
     except Exception as e:
-        return {
+        return jsonify({
             'success': False,
-            'error': str(e)
-        }
+            'message': str(e)
+        }), 500
 
-def main():
-    st.title("AI Motivational Video Generator")
-
-    # File uploaders
-    uploaded_file = st.file_uploader("Choose a background image", type=["jpg", "png"])
-    if uploaded_file:
-        st.session_state.background_path = uploaded_file.name
-
-    uploaded_music = st.file_uploader("Choose a background music", type=["mp3"])
-    if uploaded_music:
-        st.session_state.music_path = uploaded_music.name
-
-    # Generate button
-    if st.button("Generate Video"):
-        if 'background_path' in st.session_state and 'music_path' in st.session_state:
-            result = generate_video(st.session_state.theme)
-            if result['success']:
-                st.success("Video generated successfully!")
-                st.write("Quote:")
-                st.write(result['quote'])
-                st.write("Video Path:")
-                st.write(result['video_path'])
-            else:
-                st.error(f"Error: {result['error']}")
-        else:
-            st.error("Please upload both background image and music.")
-
-    # Rest of the component
-    st.write("This is a Streamlit app for generating motivational videos.")
+@app.route('/video/<path:filename>')
+def serve_video(filename):
+    try:
+        return send_file(
+            os.path.join(app.config['OUTPUT_FOLDER'], filename),
+            mimetype='video/mp4'
+        )
+    except Exception as e:
+        return str(e), 404
 
 if __name__ == '__main__':
-    os.makedirs('output', exist_ok=True)
-    main() 
+    app.run(debug=True) 

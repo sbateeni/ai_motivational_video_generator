@@ -1,29 +1,35 @@
 """
-Text generation module using Google's Gemini model.
+Text generation module for motivational quotes.
 """
-import google.generativeai as genai
-import streamlit as st
+import random
 
 class TextGenerator:
     def __init__(self):
-        genai.configure(api_key=st.secrets["gemini"]["api_key"])
-        self.model = genai.GenerativeModel('gemini-pro')
-        
+        self.quotes = [
+            "Success is not final, failure is not fatal: it is the courage to continue that counts.",
+            "The only way to do great work is to love what you do.",
+            "Believe you can and you're halfway there.",
+            "Everything you've ever wanted is on the other side of fear.",
+            "The future belongs to those who believe in the beauty of their dreams.",
+            "Don't watch the clock; do what it does. Keep going.",
+            "The only limit to our realization of tomorrow will be our doubts of today.",
+            "Success is walking from failure to failure with no loss of enthusiasm.",
+            "The way to get started is to quit talking and begin doing.",
+            "Your time is limited, don't waste it living someone else's life."
+        ]
+    
     def generate_motivational_quote(self, theme=None):
         """
-        Generate a motivational quote based on an optional theme.
+        Generate a motivational quote.
         
         Args:
-            theme (str, optional): The theme for the motivational quote.
+            theme (str, optional): Theme for the quote (not used in this simple version)
             
         Returns:
-            str: Generated motivational quote
+            str: A motivational quote
         """
-        prompt = f"Generate a short, powerful motivational quote{f' about {theme}' if theme else ''}. Keep it under 100 words."
-        
         try:
-            response = self.model.generate_content(prompt)
-            return response.text.strip()
+            return random.choice(self.quotes)
         except Exception as e:
-            print(f"Error generating quote: {e}")
-            return "Believe in yourself and all that you are. Know that there is something inside you that is greater than any obstacle." 
+            print(f"Error generating quote: {str(e)}")
+            raise 
