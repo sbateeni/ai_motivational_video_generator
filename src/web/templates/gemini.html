@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemini Video Generator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #1a1a1a;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .container {
+            max-width: 800px;
+            margin-top: 2rem;
+        }
+        .card {
+            background-color: #2d2d2d;
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .card-header {
+            background-color: #3d3d3d;
+            border-bottom: none;
+            border-radius: 15px 15px 0 0 !important;
+        }
+        .form-control, .form-select {
+            background-color: #3d3d3d;
+            border: 1px solid #4d4d4d;
+            color: #ffffff;
+        }
+        .form-control:focus, .form-select:focus {
+            background-color: #3d3d3d;
+            border-color: #5d5d5d;
+            color: #ffffff;
+            box-shadow: none;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+            padding: 10px 20px;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+        .theme-btn {
+            background-color: #3d3d3d;
+            border: 1px solid #4d4d4d;
+            color: #ffffff;
+            margin: 5px;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+        .theme-btn:hover, .theme-btn.active {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+        }
+        .progress {
+            height: 10px;
+            margin-top: 10px;
+        }
+        .preview-text {
+            background-color: #3d3d3d;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-size: 1.2em;
+            line-height: 1.6;
+        }
+        .youtube-options {
+            background-color: #3d3d3d;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="text-center mb-0">Gemini Video Generator</h2>
+            </div>
+            <div class="card-body">
+                <form id="videoForm" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label class="form-label">Select Theme</label>
+                        <div class="d-flex flex-wrap">
+                            <button type="button" class="theme-btn active" data-theme="motivation">Motivation</button>
+                            <button type="button" class="theme-btn" data-theme="success">Success</button>
+                            <button type="button" class="theme-btn" data-theme="leadership">Leadership</button>
+                            <button type="button" class="theme-btn" data-theme="mindset">Mindset</button>
+                        </div>
+                        <input type="hidden" name="theme" id="theme" value="motivation">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="customText" class="form-label">Custom Text (Optional)</label>
+                        <textarea class="form-control" id="customText" name="customText" rows="3" placeholder="Enter your custom text here..."></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="background" class="form-label">Background (Image/Video)</label>
+                        <input type="file" class="form-control" id="background" name="background" accept="image/*,video/*">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="audio" class="form-label">Background Music (Optional)</label>
+                        <input type="file" class="form-control" id="audio" name="audio" accept="audio/*">
+                    </div>
+
+                    <div class="youtube-options">
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="uploadToYoutube" name="upload_to_youtube">
+                            <label class="form-check-label" for="uploadToYoutube">
+                                Upload to YouTube
+                            </label>
+                        </div>
+
+                        <div id="youtubeFields" style="display: none;">
+                            <div class="mb-3">
+                                <label for="title" class="form-label">Video Title</label>
+                                <input type="text" class="form-control" id="title" name="title" placeholder="Enter video title">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="description" class="form-label">Video Description</label>
+                                <textarea class="form-control" id="description" name="description" rows="3" placeholder="Enter video description"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">Generate Video</button>
+                </form>
+
+                <div class="loading">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2">Generating your video...</p>
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div class="preview-text" style="display: none;">
+                    <h4>Preview Text:</h4>
+                    <p id="previewText"></p>
+                </div>
+
+                <div id="videoPreview" class="mt-4" style="display: none;">
+                    <h4>Generated Video:</h4>
+                    <video id="videoPlayer" controls class="w-100">
+                        <source src="" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <div class="mt-3">
+                        <a id="downloadLink" href="#" class="btn btn-primary" download>Download Video</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('videoForm');
+            const loading = document.querySelector('.loading');
+            const progressBar = document.querySelector('.progress-bar');
+            const previewText = document.getElementById('previewText');
+            const previewTextDiv = document.querySelector('.preview-text');
+            const videoPreview = document.getElementById('videoPreview');
+            const videoPlayer = document.getElementById('videoPlayer');
+            const downloadLink = document.getElementById('downloadLink');
+            const themeButtons = document.querySelectorAll('.theme-btn');
+            const themeInput = document.getElementById('theme');
+            const customTextInput = document.getElementById('customText');
+            const uploadToYoutube = document.getElementById('uploadToYoutube');
+            const youtubeFields = document.getElementById('youtubeFields');
+
+            // Theme selection
+            themeButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    themeButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    themeInput.value = this.dataset.theme;
+                });
+            });
+
+            // Custom text preview
+            customTextInput.addEventListener('input', function() {
+                if (this.value.trim()) {
+                    previewText.textContent = this.value;
+                    previewTextDiv.style.display = 'block';
+                } else {
+                    previewTextDiv.style.display = 'none';
+                }
+            });
+
+            // YouTube upload toggle
+            uploadToYoutube.addEventListener('change', function() {
+                youtubeFields.style.display = this.checked ? 'block' : 'none';
+            });
+
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const formData = new FormData(this);
+                
+                // Show loading
+                loading.style.display = 'block';
+                videoPreview.style.display = 'none';
+                
+                // Simulate progress
+                let progress = 0;
+                const progressInterval = setInterval(() => {
+                    progress += 5;
+                    if (progress <= 90) {
+                        progressBar.style.width = progress + '%';
+                    }
+                }, 500);
+
+                try {
+                    const response = await fetch('/generate', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        // Update progress to 100%
+                        clearInterval(progressInterval);
+                        progressBar.style.width = '100%';
+                        
+                        // Show video preview
+                        videoPlayer.src = '/video/' + data.video_path.split('/').pop();
+                        downloadLink.href = '/video/' + data.video_path.split('/').pop();
+                        videoPreview.style.display = 'block';
+                        
+                        // Show YouTube response if available
+                        if (data.youtube_response) {
+                            if (data.youtube_response.error) {
+                                alert('Error uploading to YouTube: ' + data.youtube_response.error);
+                            } else {
+                                alert('Video uploaded to YouTube successfully!');
+                            }
+                        }
+                    } else {
+                        alert('Error: ' + data.message);
+                    }
+                } catch (error) {
+                    alert('Error: ' + error.message);
+                } finally {
+                    // Hide loading after a short delay
+                    setTimeout(() => {
+                        loading.style.display = 'none';
+                        progressBar.style.width = '0%';
+                    }, 1000);
+                }
+            });
+        });
+    </script>
+</body>
+</html> 
