@@ -1,49 +1,8 @@
-# This file lists the Python packages required for your Streamlit application.
-# Streamlit Cloud reads this file to install dependencies.
-# Add or remove packages as needed for your project.
-# Pinning versions (==x.y.z) is recommended for reproducibility.
-
-# Core Dependencies
-flask==2.0.1
-werkzeug==2.0.1
-
-# AI and ML
-numpy==1.21.0
-
-# Video Processing
+flask==3.0.2
+huggingface_hub==0.20.3
+google-auth==2.27.0
+google-api-python-client==2.118.0
 moviepy==1.0.3
-Pillow==9.0.0
-Wand==0.6.11  # For ImageMagick support
-
-# Audio Processing
-gTTS==2.2.3
-
-# Utilities
-requests==2.26.0
-
-# Data Handling and Analysis
-python-dotenv==0.19.0
-
-# Visualization (Choose what you need)
-matplotlib==3.8.4
-seaborn==0.13.2
-plotly==5.19.0
-
-# Machine Learning (Optional - add libraries like scikit-learn, tensorflow, pytorch)
-# scikit-learn==1.4.2
-
-# Video and Image Processing (Optional - if your app deals with video/images)
-# moviepy==1.0.3
-# Pillow==10.0.0
-# opencv-python-headless is for environments without a GUI (like Streamlit Cloud)
-# Pin a version that was listed as available and works for you, e.g., 4.11.0.86 or later.
-# Based on your previous error, 4.8.0 wasn't found, but 4.11.0.86 was listed.
-# opencv-python-headless==4.8.0
-
-# Add any other libraries your app uses here:
-# your_package_name==x.y.z
-
-# Google API client libraries
-google-api-python-client==2.86.0
-google-auth-httplib2==0.1.0
-google-auth-oauthlib==1.0.0
+python-dotenv==1.0.1
+google-generativeai==0.3.2
+requests==2.31.0 

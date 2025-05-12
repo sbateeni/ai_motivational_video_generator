@@ -1,107 +1,129 @@
-"""
-AI Motivational Video Generator using Streamlit.
-"""
-import streamlit as st
 import os
-from src.ai.text_generator import TextGenerator
-from src.video.video_generator import VideoGenerator
-from src.audio.audio_processor import AudioProcessor
-import tempfile
+from datetime import datetime
+from flask import Flask, jsonify
+from dotenv import load_dotenv
+import google.generativeai as genai
+from google.oauth2.credentials import Credentials
+from google_auth_oauthlib.flow import InstalledAppFlow
+from google.auth.transport.requests import Request
+from googleapiclient.discovery import build
+from moviepy.editor import VideoFileClip, TextClip, CompositeVideoClip
+import requests
+import json
+import pickle
 
-# Initialize components
-text_generator = TextGenerator()
-video_generator = VideoGenerator()
-audio_processor = AudioProcessor()
+# Load environment variables
+load_dotenv()
 
-# Set page config
-st.set_page_config(
-    page_title="AI Motivational Video Generator",
-    page_icon="🎥",
-    layout="wide"
-)
+app = Flask(__name__)
 
-# Title and description
-st.title("🎥 AI Motivational Video Generator")
-st.markdown("""
-Create inspiring motivational videos with AI-generated quotes, custom backgrounds, and background music.
-""")
+# Configure Google Gemini API
+GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
+genai.configure(api_key=GOOGLE_API_KEY)
 
-# Create columns for input
-col1, col2 = st.columns(2)
+# YouTube API configuration
+SCOPES = ['https://www.googleapis.com/auth/youtube.upload']
+CLIENT_SECRETS_FILE = "client_secrets.json"
 
-with col1:
-    # Theme input
-    theme = st.text_input("Theme (optional)", placeholder="Enter a theme for your motivational video")
+def get_youtube_credentials():
+    """Get YouTube API credentials."""
+    creds = None
+    if os.path.exists('token.pickle'):
+        with open('token.pickle', 'rb') as token:
+            creds = pickle.load(token)
     
-    # Background upload
-    background_file = st.file_uploader("Background Image/Video (optional)", type=['jpg', 'jpeg', 'png', 'mp4', 'mov'])
+    if not creds or not creds.valid:
+        if creds and creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+        else:
+            flow = InstalledAppFlow.from_client_secrets_file(CLIENT_SECRETS_FILE, SCOPES)
+            creds = flow.run_local_server(port=0)
+        with open('token.pickle', 'wb') as token:
+            pickle.dump(creds, token)
     
-    # Music upload
-    music_file = st.file_uploader("Background Music (optional)", type=['mp3', 'wav'])
+    return creds
 
-# Generate button
-if st.button("Generate Video", type="primary"):
-    if not theme and not background_file and not music_file:
-        st.warning("Please provide at least one input (theme, background, or music)")
-    else:
-        with st.spinner("Generating your motivational video..."):
-            try:
-                # Create temporary directory for processing
-                with tempfile.TemporaryDirectory() as temp_dir:
-                    # Generate quote
-                    quote = text_generator.generate_motivational_quote(theme)
-                    st.success("Generated Quote:")
-                    st.write(quote)
-                    
-                    # Process background file if provided
-                    background_path = None
-                    if background_file:
-                        background_path = os.path.join(temp_dir, background_file.name)
-                        with open(background_path, 'wb') as f:
-                            f.write(background_file.getvalue())
-                    
-                    # Process music file if provided
-                    music_path = None
-                    if music_file:
-                        music_path = os.path.join(temp_dir, music_file.name)
-                        with open(music_path, 'wb') as f:
-                            f.write(music_file.getvalue())
-                    
-                    # Generate speech
-                    speech_path = audio_processor.text_to_speech(quote)
-                    
-                    # Mix audio if music provided
-                    if music_path:
-                        final_audio_path = audio_processor.mix_audio(
-                            speech_path,
-                            music_path,
-                            os.path.join(temp_dir, 'mixed.mp3')
-                        )
-                    else:
-                        final_audio_path = speech_path
-                    
-                    # Generate video
-                    output_path = video_generator.create_video(
-                        quote,
-                        background_path,
-                        os.path.join(temp_dir, 'output.mp4')
-                    )
-                    
-                    # Display video
-                    st.video(output_path)
-                    
-                    # Download button
-                    with open(output_path, 'rb') as f:
-                        st.download_button(
-                            label="Download Video",
-                            data=f,
-                            file_name="motivational_video.mp4",
-                            mime="video/mp4"
-                        )
-                    
-            except Exception as e:
-                st.error(f"Error generating video: {str(e)}")
+def generate_motivational_quote():
+    """Generate a motivational quote using Google Gemini."""
+    model = genai.GenerativeModel('gemini-pro')
+    prompt = "Generate a short, powerful motivational quote from famous authors or leaders. Keep it under 100 characters."
+    response = model.generate_content(prompt)
+    return response.text.strip()
 
-# Add footer
-st.markdown("---")
-st.markdown("Made with ❤️ using Streamlit") 
+def create_video_with_text(video_path, text):
+    """Create a video with text overlay."""
+    video = VideoFileClip(video_path)
+    
+    # Create text clip
+    txt_clip = TextClip(text, fontsize=70, color='white', font='Arial-Bold')
+    txt_clip = txt_clip.set_position(('center', 'bottom')).set_duration(video.duration)
+    
+    # Composite video
+    final_video = CompositeVideoClip([video, txt_clip])
+    
+    # Generate output filename
+    output_filename = f"video_{datetime.now().strftime('%Y%m%d')}.mp4"
+    final_video.write_videofile(output_filename)
+    
+    return output_filename
+
+def upload_to_youtube(video_path, title, description):
+    """Upload video to YouTube."""
+    credentials = get_youtube_credentials()
+    youtube = build('youtube', 'v3', credentials=credentials)
+    
+    request_body = {
+        'snippet': {
+            'title': title,
+            'description': description,
+            'tags': ['motivation', 'inspiration', 'daily quote'],
+            'categoryId': '22'  # People & Blogs category
+        },
+        'status': {
+            'privacyStatus': 'public',
+            'selfDeclaredMadeForKids': False
+        }
+    }
+    
+    mediaFile = youtube.media().upload(
+        part='snippet,status',
+        body=request_body,
+        media_body=video_path,
+        media_mime_type='video/mp4'
+    )
+    
+    return mediaFile.execute()
+
+@app.route('/generate', methods=['POST'])
+def generate_video():
+    try:
+        # Generate quote
+        quote = generate_motivational_quote()
+        
+        # Create video with text
+        video_path = create_video_with_text('base_video.mp4', quote)
+        
+        # Upload to YouTube
+        title = f"رحلة اليوم – اقتباس من العظماء ({datetime.now().strftime('%Y-%m-%d')})"
+        description = f"اقتباس اليوم: {quote}\n\nتابعونا للمزيد من المحتوى التحفيزي!"
+        
+        upload_result = upload_to_youtube(video_path, title, description)
+        
+        return jsonify({
+            'success': True,
+            'message': 'Video generated and uploaded successfully',
+            'video_id': upload_result['id']
+        })
+    
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/health', methods=['GET'])
+def health_check():
+    return jsonify({'status': 'healthy'})
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000) 
