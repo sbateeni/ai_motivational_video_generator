@@ -1,0 +1,78 @@
+2025-05-12 14:26:29,859 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.0.194:5000
+2025-05-12 14:26:29,860 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-05-12 14:26:29,882 - werkzeug - INFO -  * Restarting with watchdog (windowsapi)
+2025-05-12 14:26:31,876 - werkzeug - WARNING -  * Debugger is active!
+2025-05-12 14:26:31,892 - werkzeug - INFO -  * Debugger PIN: 942-969-405
+2025-05-12 14:26:33,804 - werkzeug - INFO - 127.0.0.1 - - [12/May/2025 14:26:33] "GET / HTTP/1.1" 200 -
+2025-05-12 14:26:33,978 - werkzeug - INFO - 127.0.0.1 - - [12/May/2025 14:26:33] "GET /static/css/style.css HTTP/1.1" 200 -
+2025-05-12 14:26:34,197 - werkzeug - INFO - 127.0.0.1 - - [12/May/2025 14:26:34] "GET /health HTTP/1.1" 200 -
+2025-05-12 14:26:41,309 - utils.logger - ERROR - Error generating quote: 404 models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.
+2025-05-12 14:26:41,310 - utils.logger - ERROR - Error in generate_daily_video: 404 models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.
+2025-05-12 14:26:41,311 - werkzeug - INFO - 127.0.0.1 - - [12/May/2025 14:26:41] "[35m[1mPOST /generate HTTP/1.1[0m" 500 -
+2025-05-12 14:27:13,400 - werkzeug - INFO -  * Detected change in 'c:\\Users\\Yosif\\Documents\\GitHub\\ai_motivational_video_generator\\daily_video_app\\utils\\text_generator.py', reloading
+2025-05-12 14:27:13,401 - werkzeug - INFO -  * Detected change in 'c:\\Users\\Yosif\\Documents\\GitHub\\ai_motivational_video_generator\\daily_video_app\\utils\\text_generator.py', reloading
+2025-05-12 14:27:16,486 - werkzeug - INFO -  * Restarting with watchdog (windowsapi)
+2025-05-12 14:27:18,644 - werkzeug - WARNING -  * Debugger is active!
+2025-05-12 14:27:18,655 - werkzeug - INFO -  * Debugger PIN: 942-969-405
+2025-05-12 14:27:20,290 - utils.logger - ERROR - Error generating quote: 404 models/gemini-2.0-pro is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.
+2025-05-12 14:27:20,291 - utils.logger - ERROR - Error in generate_daily_video: 404 models/gemini-2.0-pro is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.
+2025-05-12 14:27:20,292 - werkzeug - INFO - 127.0.0.1 - - [12/May/2025 14:27:20] "[35m[1mPOST /generate HTTP/1.1[0m" 500 -
+2025-05-12 14:28:17,970 - werkzeug - INFO -  * Detected change in 'c:\\Users\\Yosif\\Documents\\GitHub\\ai_motivational_video_generator\\daily_video_app\\utils\\text_generator.py', reloading
+2025-05-12 14:28:17,976 - werkzeug - INFO -  * Detected change in 'c:\\Users\\Yosif\\Documents\\GitHub\\ai_motivational_video_generator\\daily_video_app\\utils\\text_generator.py', reloading
+2025-05-12 14:28:17,976 - werkzeug - INFO -  * Detected change in 'c:\\Users\\Yosif\\Documents\\GitHub\\ai_motivational_video_generator\\daily_video_app\\utils\\text_generator.py', reloading
+2025-05-12 14:28:20,343 - werkzeug - INFO -  * Restarting with watchdog (windowsapi)
+2025-05-12 14:28:22,693 - werkzeug - WARNING -  * Debugger is active!
+2025-05-12 14:28:22,703 - werkzeug - INFO -  * Debugger PIN: 942-969-405
+2025-05-12 14:28:23 - "The journey of a thousand miles begins with one step." - Lao Tzu
+2025-05-12 14:28:23,469 - utils.logger - INFO - Generated quote: "The journey of a thousand miles begins with one step." - Lao Tzu
+2025-05-12 14:28:23,472 - utils.logger - INFO - Generated quote: "The journey of a thousand miles begins with one step." - Lao Tzu
+2025-05-12 14:28:24,474 - utils.logger - ERROR - Error generating video: 404 Client Error. (Request ID: Root=1-6821db57-2b1d3b82476430f0783db56b;644bc195-2d4c-4049-a9e1-5d3ea3fc154c)
+
+Entry Not Found for url: https://huggingface.co/ali-vilab/text-to-video-ms-1.7b/resolve/main/car_scene.mp4.
+2025-05-12 14:28:24,478 - utils.logger - ERROR - Error in generate_daily_video: 404 Client Error. (Request ID: Root=1-6821db57-2b1d3b82476430f0783db56b;644bc195-2d4c-4049-a9e1-5d3ea3fc154c)
+
+Entry Not Found for url: https://huggingface.co/ali-vilab/text-to-video-ms-1.7b/resolve/main/car_scene.mp4.
+2025-05-12 14:28:24,484 - werkzeug - INFO - 127.0.0.1 - - [12/May/2025 14:28:24] "[35m[1mPOST /generate HTTP/1.1[0m" 500 -
+2025-05-12 14:28:44,987 - werkzeug - INFO -  * Detected change in 'c:\\Users\\Yosif\\Documents\\GitHub\\ai_motivational_video_generator\\daily_video_app\\utils\\video_generator.py', reloading
+2025-05-12 14:28:44,992 - werkzeug - INFO -  * Detected change in 'c:\\Users\\Yosif\\Documents\\GitHub\\ai_motivational_video_generator\\daily_video_app\\utils\\video_generator.py', reloading
+2025-05-12 14:28:44,993 - werkzeug - INFO -  * Detected change in 'c:\\Users\\Yosif\\Documents\\GitHub\\ai_motivational_video_generator\\daily_video_app\\utils\\video_generator.py', reloading
+2025-05-12 14:28:48,179 - werkzeug - INFO -  * Restarting with watchdog (windowsapi)
+2025-05-12 14:28:50,450 - werkzeug - WARNING -  * Debugger is active!
+2025-05-12 14:28:50,460 - werkzeug - INFO -  * Debugger PIN: 942-969-405
+2025-05-12 14:28:52,356 - werkzeug - INFO - 127.0.0.1 - - [12/May/2025 14:28:52] "GET / HTTP/1.1" 200 -
+2025-05-12 14:28:52,490 - werkzeug - INFO - 127.0.0.1 - - [12/May/2025 14:28:52] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-05-12 14:28:52,551 - werkzeug - INFO - 127.0.0.1 - - [12/May/2025 14:28:52] "GET /health HTTP/1.1" 200 -
+2025-05-12 14:28:55 - "The journey of a thousand miles begins with one step." - Lao Tzu
+2025-05-12 14:28:55,540 - utils.logger - INFO - Generated quote: "The journey of a thousand miles begins with one step." - Lao Tzu
+2025-05-12 14:28:55,543 - utils.logger - INFO - Generated quote: "The journey of a thousand miles begins with one step." - Lao Tzu
+2025-05-12 14:28:56,434 - utils.logger - ERROR - Error generating video: 404 Client Error. (Request ID: Root=1-6821db77-4dc4c16f4aec632c77678a51;59b60707-9b24-4c2b-8325-37b68195d18c)
+
+Entry Not Found for url: https://huggingface.co/ali-vilab/text-to-video-ms-1.7b/resolve/main/sample_video.mp4.
+2025-05-12 14:28:56,439 - utils.logger - ERROR - Error in generate_daily_video: 404 Client Error. (Request ID: Root=1-6821db77-4dc4c16f4aec632c77678a51;59b60707-9b24-4c2b-8325-37b68195d18c)
+
+Entry Not Found for url: https://huggingface.co/ali-vilab/text-to-video-ms-1.7b/resolve/main/sample_video.mp4.
+2025-05-12 14:28:56,443 - werkzeug - INFO - 127.0.0.1 - - [12/May/2025 14:28:56] "[35m[1mPOST /generate HTTP/1.1[0m" 500 -
+2025-05-12 14:31:28,851 - werkzeug - INFO -  * Detected change in 'c:\\Users\\Yosif\\Documents\\GitHub\\ai_motivational_video_generator\\daily_video_app\\utils\\video_generator.py', reloading
+2025-05-12 14:31:29,395 - werkzeug - INFO -  * Detected change in 'C:\\Users\\Yosif\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\site-packages\\PIL\\ImageOps.py', reloading
+2025-05-12 14:31:31,831 - werkzeug - INFO -  * Restarting with watchdog (windowsapi)
+2025-05-12 14:31:54,848 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.0.194:5000
+2025-05-12 14:31:54,848 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-05-12 14:31:54,860 - werkzeug - INFO -  * Restarting with watchdog (windowsapi)
+2025-05-12 14:32:02,929 - werkzeug - WARNING -  * Debugger is active!
+2025-05-12 14:32:02,939 - werkzeug - INFO -  * Debugger PIN: 942-969-405
+2025-05-12 14:32:10,941 - werkzeug - INFO - 127.0.0.1 - - [12/May/2025 14:32:10] "GET / HTTP/1.1" 200 -
+2025-05-12 14:32:11,078 - werkzeug - INFO - 127.0.0.1 - - [12/May/2025 14:32:11] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-05-12 14:32:11,128 - werkzeug - INFO - 127.0.0.1 - - [12/May/2025 14:32:11] "GET /health HTTP/1.1" 200 -
+2025-05-12 14:32:16 - "The future belongs to those who believe in the beauty of their dreams." - Eleanor Roosevelt
+2025-05-12 14:32:16,177 - utils.logger - INFO - Generated quote: "The future belongs to those who believe in the beauty of their dreams." - Eleanor Roosevelt
+2025-05-12 14:32:16,180 - utils.logger - INFO - Generated quote: "The future belongs to those who believe in the beauty of their dreams." - Eleanor Roosevelt
+2025-05-12 14:32:17,748 - py.warnings - WARNING - C:\Users\Yosif\AppData\Local\Programs\Python\Python313\Lib\site-packages\huggingface_hub\file_download.py:144: UserWarning: `huggingface_hub` cache-system uses symlinks by default to efficiently store duplicated files but your machine does not support them in C:\Users\Yosif\.cache\huggingface\hub\models--damo-vilab--text-to-video-ms-1.7b. Caching files will still work but in a degraded version that might require more space on your disk. This warning can be disabled by setting the `HF_HUB_DISABLE_SYMLINKS_WARNING` environment variable. For more details, see https://huggingface.co/docs/huggingface_hub/how-to-cache#limitations.
+To support symlinks on Windows, you either need to activate Developer Mode or to run Python as an administrator. In order to activate developer mode, see this article: https://docs.microsoft.com/en-us/windows/apps/get-started/enable-your-device-for-development
+  warnings.warn(message)
+

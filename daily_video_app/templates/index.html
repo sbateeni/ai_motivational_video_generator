@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مولد الفيديوهات التحفيزية</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>مولد الفيديوهات التحفيزية</h1>
+        
+        <div class="status-section">
+            <h2>حالة النظام</h2>
+            <p id="status">جاري التحقق...</p>
+        </div>
+        
+        <div class="controls-section">
+            <button id="generateBtn" onclick="generateVideo()">إنشاء فيديو جديد</button>
+        </div>
+        
+        <div class="log-section">
+            <h2>سجل العمليات</h2>
+            <div id="log"></div>
+        </div>
+    </div>
+
+    <script>
+        // Check system status
+        fetch('/health')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('status').textContent = 
+                    data.status === 'healthy' ? 'النظام يعمل بشكل صحيح' : 'هناك مشكلة في النظام';
+            })
+            .catch(error => {
+                document.getElementById('status').textContent = 'خطأ في الاتصال بالخادم';
+            });
+
+        // Generate video
+        function generateVideo() {
+            const generateBtn = document.getElementById('generateBtn');
+            const log = document.getElementById('log');
+            
+            generateBtn.disabled = true;
+            log.innerHTML += '<p>جاري إنشاء الفيديو...</p>';
+            
+            fetch('/generate', {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    log.innerHTML += `<p class="success">تم إنشاء ورفع الفيديو بنجاح!</p>`;
+                    log.innerHTML += `<p>معرف الفيديو: ${data.video_id}</p>`;
+                } else {
+                    log.innerHTML += `<p class="error">حدث خطأ: ${data.error}</p>`;
+                }
+            })
+            .catch(error => {
+                log.innerHTML += `<p class="error">خطأ في الاتصال: ${error}</p>`;
+            })
+            .finally(() => {
+                generateBtn.disabled = false;
+            });
+        }
+    </script>
+</body>
+</html> 
